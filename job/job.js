@@ -36,7 +36,7 @@ const loadAllDays = async () => {
 
     } else if ( TriangleHandler.isInlinePoints(positionV, positionF, positionB) ) {
 
-      objDay.clima = "condiciones óptimas de presión y temperatura";
+      objDay.clima = "copt";
       daysArr.push(objDay);
 
     } else if ( TriangleHandler.isSunInsideTriangle(positionV, positionF, positionB) ) {
@@ -57,7 +57,16 @@ const loadAllDays = async () => {
     daysArr[day].clima += ` - pico de intensidad`
   });
 
-  let response = await MongoHandler.getCountOfWeather();
+  let query = [{
+    $group: {
+      _id: "$clima",
+      total: {
+        $sum: 1
+      }
+    }
+  }];
+
+  let response = await MongoHandler.doQueryRequest(query);
   if ( !Array.isArray(response) || response.length == 0 ) {
     await MongoHandler.insertDatesWeather(daysArr);
   };

@@ -103,20 +103,13 @@ class MongoHandler {
   /**
    * This method returns the number of repetitions of each weather.
    */
-  static async getCountOfWeather() {
+  static async doQueryRequest(query) {
     try {
       let _instance = new MongoHandler();
       const client = await _instance.createClient(_instance.mongoUri);
       const db = await _instance.connectDB(client, _instance.databaseName);
       const collection = await _instance.getCollection(db, _instance.collectionName);
-      return await collection.aggregate([{
-        $group: {
-          _id: "$clima",
-          total: {
-            $sum: 1
-          }
-        }
-      }]).toArray();
+      return await collection.aggregate(query).toArray();
     } catch (error) {
       let _instance = new MongoHandler();
       throw _instance.errorObjectResponse(error, "Error trying to get count of weather in getCountOfWeather");

@@ -15,7 +15,7 @@ class WeatherController {
     try {
       if (reqDia >= 360) {
         let multi = Math.floor(reqDia / 360);
-        return ( reqDia - ( 360 * multi ) );
+        return (reqDia - (360 * multi));
       };
       return reqDia;
     } catch (error) {
@@ -36,7 +36,10 @@ class WeatherController {
       if (!result) {
         throw _instance.errorObjectResponse(`No se pudo obtener el día ${reqDia}`, "Error in getWeather");
       }
-      res.json( { "dia": reqDia, "clima": result.clima } );
+      res.json({
+        "dia": reqDia,
+        "clima": result.clima
+      });
     } catch (error) {
       res.status(400).json({
         status: false,
@@ -49,15 +52,39 @@ class WeatherController {
     try {
       let _instance = new WeatherController();
       let query = req.query;
-      let reqYear = query.year ? parseInt( query.year ) : 10;
+      let reqYear = query.year ? parseInt(query.year) : 10;
       if (reqYear < 1) {
         throw _instance.errorObjectResponse("El parametro year tiene que ser igual o superior a 1", "Error in getPrediction");
       }
-      let result = await MongoHandler.getCountOfWeather();
+      let request = [{
+        $group: {
+          _id: "$clima",
+          total: {
+            $sum: 1
+          }
+        }
+      }];
+      let result = await MongoHandler.doQueryRequest(request);
       let response = {}
-      result.map( (weather) => {
-        response[weather._id] = ( weather.total * reqYear );
-      } );
+      result.map((weather) => {
+        response[weather._id] = (weather.total * reqYear);
+      });
+
+      request = [{
+        $match: {
+          "clima": "lluvia - pico de intensidad"
+        }
+      }];
+
+      let resp = await MongoHandler.doQueryRequest(request);
+      response["dia-max-lluvia"] = [];
+      resp.map((day) => {
+        for (let index = 0; index < reqYear; index++) {
+          let maxRain = ( day.dia + ( 360 * index));
+          response["dia-max-lluvia"].push(maxRain);
+        }
+      });
+
       res.json(response);
     } catch (error) {
       res.status(400).json({

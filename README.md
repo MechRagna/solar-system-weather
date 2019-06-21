@@ -26,7 +26,7 @@ npm start
 
 URL: https://solar-system-weather-ml.appspot.com/  
 Method: GET  
-Descripcion: Este servicio indica la cantidad de días de lluvias, sequía, normal y lluvias maximas que hubo en los proximos 10 años.  
+Descripcion: Este servicio indica la cantidad de días de lluvias, sequía, normal, copt, lluvias maximas y que día fueron esas lluvias maximas que hubo en los proximos 10 años.  
 
 Query:  
 - year: 

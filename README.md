@@ -48,6 +48,9 @@ Query:
     - obligatorio: si.
     - descripcion: El número de día que se desea consultar.  
 
+EJ:
+- https://solar-system-weather-ml.appspot.com/clima?dia=720
+
 # Configuración del Proyecto
 
 ## Listado de librerias utilizadas:

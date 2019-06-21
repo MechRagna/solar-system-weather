@@ -16,7 +16,7 @@ describe("Testeando MongoHandler: ", function () {
   });
 
   it("valido que el tipo de dato sea el correcto en la respuesta: ", async function () {
-    result = await MongoHandler.getCountOfWeather();
+    result = await MongoHandler.doQueryRequest();
     assert.typeOf(result, "Array");
   });
   
